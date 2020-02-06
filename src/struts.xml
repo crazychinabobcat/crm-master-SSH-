@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 配置Struts2的常量 -->
+	<constant name="struts.action.extension" value="action"/>
+
+	<!-- 配置struts上传文件的总大小 -->
+	<constant name="struts.multipart.maxSize" value="5242880"/>
+	
+	<package name="crm" extends="struts-default" namespace="/">
+		<interceptors>
+			<interceptor name="privilegeInterceptor" class="com.lynx.crm.interceptor.PrivilegeInterceptor"></interceptor>
+		</interceptors>
+
+		<global-results>
+			<result name="login">login.jsp</result>
+		</global-results>
+
+		<!-- 配置用户action -->
+		<action name="user_*" class="userAction"  method="{1}">
+			<result name="login">/login.jsp</result>
+			<result name="success" type="redirect">/index.jsp</result>
+
+			<interceptor-ref name="defaultStack">
+				<param name="fileUpload.maximumSize">5242880</param>
+				<param name="fileUpload.allowedExtensions">.jpg </param>
+			</interceptor-ref>
+
+		</action>
+
+		<!-- 配置客户管理Action -->
+		<action name="customer_*" class="customerAction" method="{1}">
+
+			<result name="saveUI">/jsp/customer/add.jsp</result>
+			<result name="findAll">/jsp/customer/list.jsp</result>
+			<result name="saveSuccess"  type="redirectAction">customer_findAll.action</result>
+			<result name="editSuccess">/jsp/customer/edit.jsp</result>
+			<result name="deleteSuccess" type="redirectAction">customer_findAll.action</result>
+			<result name="updateSuccess" type="redirectAction">customer_findAll.action</result>
+
+			<interceptor-ref name="privilegeInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+
+		<!-- 配置字典查询的Action -->
+		<action name="baseDict_*" class="baseDictAction" method="{1}">
+			<interceptor-ref name="privilegeInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+
+		</action>
+		
+
+		<!-- 联系人的Action -->
+		<action name="linkMan_*" class="linkManAction" method="{1}">
+			<result name="findAll">/jsp/linkman/list.jsp</result>
+			<result name="saveUI">/jsp/linkman/add.jsp</result>
+			<result name="editSuccess">/jsp/linkman/edit.jsp</result>
+			<result name="saveSuccess" type="redirectAction">linkMan_findAll.action</result>
+			<result name="updateSuccess" type="redirectAction">linkMan_findAll.action</result>
+			<result name="deleteSucess" type="redirectAction">linkMan_findAll.action</result>
+
+			<interceptor-ref name="privilegeInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+
+
+		<!-- 客户拜访记录的Action -->
+		<action name="saleVisit_*" class="saleVisitAction" method="{1}">
+			<result name="findAll">/jsp/salevisit/list.jsp</result>
+			<result name="saveUI">/jsp/salevisit/add.jsp</result>
+			<result name="saveSuccess" type="redirectAction">saleVisit_findAll.action</result>
+			<interceptor-ref name="privilegeInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+
+	</package>
+
+
+</struts>
